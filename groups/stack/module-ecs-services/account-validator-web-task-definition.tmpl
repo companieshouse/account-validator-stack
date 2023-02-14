@@ -1,0 +1,51 @@
+
+[
+
+    {
+        "environment": [
+            { "name": "PORT", "value": "${account_validator_web_proxy_port}" },
+            { "name": "LOGLEVEL", "value": "${log_level}" },
+            { "name": "OAUTH2_AUTH_URI", "value": "https://${account_subdomain_prefix}${external_top_level_domain}/oauth2/authorise" },
+            { "name": "OAUTH2_REDIRECT_URI", "value": "${account_validator_web_oauth2_redirect_uri}" },
+            { "name": "OAUTH2_TOKEN_URI", "value": "${account_validator_web_oauth2_token_uri}" },
+            { "name": "CDN_HOST", "value": "${account_validator_web_cdn_host}" },
+            { "name": "CHS_URL", "value": "${account_validator_web_chs_url}" },
+            { "name": "ACCOUNT_URL", "value": "${account_validator_web_account_url}" },
+            { "name": "CHS_MONITOR_GUI_URL", "value": "${account_validator_web_monitor_url}" },
+            { "name": "COOKIE_DOMAIN", "value": "${cookie_domain}" },
+            { "name": "COOKIE_NAME", "value": "${cookie_name}" },
+            { "name": "CACHE_POOL_SIZE", "value": "${account_validator_web_cache_pool_size}" },
+            { "name": "CACHE_SERVER", "value": "${account_validator_web_cache_server}" },
+            { "name": "DEFAULT_SESSION_EXPIRATION", "value": "${account_validator_web_default_session_expiration}" },
+            { "name": "INTERNAL_API_URL", "value": "${internal_api_url}" },
+            { "name": "API_URL", "value": "${api_url}" }
+        ],
+        "name": "${service_name}",
+        "image": "${docker_registry}/${service_name}:${account_validator_web_release_version}",
+        "cpu": 1,
+        "memory": 512,
+        "mountPoints": [],
+        "portMappings": [{
+            "containerPort": ${account_validator_web_proxy_port},
+            "hostPort": 0,
+            "protocol": "tcp"
+        }],
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-create-group": "true",
+                "awslogs-region": "${aws_region}",
+                "awslogs-group": "/ecs/${name_prefix}/${service_name}",
+                "awslogs-stream-prefix": "ecs"
+            }
+        },
+        "secrets": [
+            { "name": "OAUTH2_CLIENT_ID", "valueFrom": "${web-oauth2-client-id}" },
+            { "name": "OAUTH2_CLIENT_SECRET", "valueFrom": "${web-oauth2-client-secret}" },
+            { "name": "OAUTH2_REQUEST_KEY", "valueFrom": "${web-oauth2-request-key}" },
+            { "name": "COOKIE_SECRET", "valueFrom": "${web-oauth2-cookie-secret}" }
+        ],
+        "volumesFrom": [],
+        "essential": true
+    }
+]
